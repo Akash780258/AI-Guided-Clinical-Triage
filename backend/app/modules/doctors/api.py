@@ -1,0 +1,178 @@
+"""
+Doctor API
+
+Provides endpoints for:
+
+- Create Doctor
+- List Doctors
+- Search Doctors
+- Get Doctor
+- Update Doctor
+- Delete Doctor
+"""
+
+from __future__ import annotations
+
+import uuid
+
+from fastapi import APIRouter, Depends, Query, status
+
+from app.modules.auth.dependencies import get_current_user
+from app.modules.auth.models import User
+from app.modules.doctors.dependencies import (
+    get_doctor_service,
+)
+from app.modules.doctors.schemas import (
+    DoctorCreate,
+    DoctorListResponse,
+    DoctorMessage,
+    DoctorResponse,
+    DoctorUpdate,
+)
+from app.modules.doctors.service import DoctorService
+
+router = APIRouter(
+    prefix="/doctors",
+    tags=["Doctors"],
+)
+
+
+# ==========================================================
+# Create
+# ==========================================================
+
+@router.post(
+    "",
+    response_model=DoctorResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_doctor(
+    data: DoctorCreate,
+    current_user: User = Depends(get_current_user),
+    service: DoctorService = Depends(
+        get_doctor_service,
+    ),
+):
+    doctor = await service.create_doctor(
+        data=data,
+        created_by=current_user,
+    )
+
+    return DoctorResponse.model_validate(
+        doctor,
+    )
+
+
+# ==========================================================
+# List
+# ==========================================================
+
+@router.get(
+    "",
+    response_model=DoctorListResponse,
+)
+async def list_doctors(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    service: DoctorService = Depends(
+        get_doctor_service,
+    ),
+):
+    return await service.list_doctors(
+        skip=skip,
+        limit=limit,
+    )
+
+
+# ==========================================================
+# Search
+# ==========================================================
+
+@router.get(
+    "/search",
+    response_model=DoctorListResponse,
+)
+async def search_doctors(
+    query: str,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    service: DoctorService = Depends(
+        get_doctor_service,
+    ),
+):
+    return await service.search_doctors(
+        query=query,
+        skip=skip,
+        limit=limit,
+    )
+
+
+# ==========================================================
+# Get
+# ==========================================================
+
+@router.get(
+    "/{doctor_id}",
+    response_model=DoctorResponse,
+)
+async def get_doctor(
+    doctor_id: uuid.UUID,
+    service: DoctorService = Depends(
+        get_doctor_service,
+    ),
+):
+    doctor = await service.get_doctor(
+        doctor_id,
+    )
+
+    return DoctorResponse.model_validate(
+        doctor,
+    )
+
+
+# ==========================================================
+# Update
+# ==========================================================
+
+@router.put(
+    "/{doctor_id}",
+    response_model=DoctorResponse,
+)
+async def update_doctor(
+    doctor_id: uuid.UUID,
+    data: DoctorUpdate,
+    service: DoctorService = Depends(
+        get_doctor_service,
+    ),
+):
+    doctor = await service.update_doctor(
+        doctor_id=doctor_id,
+        data=data,
+    )
+
+    return DoctorResponse.model_validate(
+        doctor,
+    )
+
+
+# ==========================================================
+# Delete
+# ==========================================================
+
+@router.delete(
+    "/{doctor_id}",
+    response_model=DoctorMessage,
+)
+async def delete_doctor(
+    doctor_id: uuid.UUID,
+    service: DoctorService = Depends(
+        get_doctor_service,
+    ),
+):
+    await service.delete_doctor(
+        doctor_id,
+    )
+
+    return DoctorMessage(
+        message="Doctor deleted successfully.",
+    )

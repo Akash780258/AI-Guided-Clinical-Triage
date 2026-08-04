@@ -1,0 +1,119 @@
+# ==========================================================
+# AGCT - Enterprise .gitignore
+# ==========================================================
+
+# -------------------------------
+# Python
+# -------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual Environments
+.venv/
+venv/
+env/
+
+# Python Environment Files
+backend/.env
+frontend/.env
+.env
+
+# -------------------------------
+# Logs
+# -------------------------------
+logs/
+backend/logs/
+*.log
+
+# -------------------------------
+# Pytest / Coverage
+# -------------------------------
+.pytest_cache/
+.coverage
+htmlcov/
+.coverage.*
+.cache/
+
+# -------------------------------
+# IDE
+# -------------------------------
+.vscode/
+.idea/
+*.code-workspace
+
+# -------------------------------
+# OS
+# -------------------------------
+.DS_Store
+Thumbs.db
+
+# -------------------------------
+# Node / Next.js
+# -------------------------------
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+
+# npm / pnpm / yarn
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# -------------------------------
+# Data (Generated Files)
+# -------------------------------
+data/uploads/*
+data/processed/*
+data/reports/*
+data/snapshots/*
+
+!data/uploads/.gitkeep
+!data/processed/.gitkeep
+!data/reports/.gitkeep
+!data/snapshots/.gitkeep
+
+# -------------------------------
+# AI Models
+# -------------------------------
+ai/models/*
+!ai/models/.gitkeep
+
+# Embeddings / Vector Storage
+chroma/
+vector_store/
+
+# -------------------------------
+# Database
+# -------------------------------
+*.sqlite3
+*.db
+
+# -------------------------------
+# Build Artifacts
+# -------------------------------
+dist/
+build/
+
+# -------------------------------
+# Docker
+# -------------------------------
+*.pid
+
+# -------------------------------
+# Temporary Files
+# -------------------------------
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# -------------------------------
+# Secrets
+# -------------------------------
+*.pem
+*.key
+*.crt
