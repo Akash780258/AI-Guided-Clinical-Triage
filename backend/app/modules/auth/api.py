@@ -3,7 +3,6 @@ Authentication API
 
 Provides endpoints for:
 
-- Register
 - Login
 - Refresh Token
 - Current User
@@ -15,7 +14,7 @@ Provides endpoints for:
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.modules.auth.dependencies import (
@@ -28,7 +27,6 @@ from app.modules.auth.schemas import (
     RefreshTokenRequest,
     TokenResponse,
     UserPublic,
-    UserRegister,
     UserResponse,
 )
 from app.modules.auth.service import AuthService
@@ -37,28 +35,6 @@ router = APIRouter(
     prefix="/auth",
     tags=["Authentication"],
 )
-
-
-# ==========================================================
-# Register
-# ==========================================================
-
-@router.post(
-    "/register",
-    response_model=UserResponse,
-    status_code=status.HTTP_201_CREATED,
-)
-async def register(
-    data: UserRegister,
-    service: AuthService = Depends(get_auth_service),
-):
-    """
-    Register a new user.
-    """
-
-    user = await service.register(data)
-
-    return UserResponse.model_validate(user)
 
 
 # ==========================================================

@@ -17,11 +17,12 @@ import uuid
 
 from fastapi import APIRouter, Depends, Query, status
 
-from app.modules.auth.dependencies import get_current_user
-from app.modules.auth.models import User
-from app.modules.doctors.dependencies import (
-    get_doctor_service,
+from app.core.security import (
+    AdminDoctorReception,
+    AdminOnly,
 )
+from app.modules.auth.models import User
+from app.modules.doctors.dependencies import get_doctor_service
 from app.modules.doctors.schemas import (
     DoctorCreate,
     DoctorListResponse,
@@ -31,6 +32,7 @@ from app.modules.doctors.schemas import (
 )
 from app.modules.doctors.service import DoctorService
 
+
 router = APIRouter(
     prefix="/doctors",
     tags=["Doctors"],
@@ -38,7 +40,8 @@ router = APIRouter(
 
 
 # ==========================================================
-# Create
+# Create Doctor
+# ADMIN ONLY
 # ==========================================================
 
 @router.post(
@@ -48,7 +51,7 @@ router = APIRouter(
 )
 async def create_doctor(
     data: DoctorCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(AdminOnly),
     service: DoctorService = Depends(
         get_doctor_service,
     ),
@@ -64,7 +67,8 @@ async def create_doctor(
 
 
 # ==========================================================
-# List
+# List Doctors
+# ADMIN / DOCTOR / RECEPTIONIST
 # ==========================================================
 
 @router.get(
@@ -74,6 +78,9 @@ async def create_doctor(
 async def list_doctors(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
+    current_user: User = Depends(
+        AdminDoctorReception,
+    ),
     service: DoctorService = Depends(
         get_doctor_service,
     ),
@@ -85,7 +92,8 @@ async def list_doctors(
 
 
 # ==========================================================
-# Search
+# Search Doctors
+# ADMIN / DOCTOR / RECEPTIONIST
 # ==========================================================
 
 @router.get(
@@ -96,6 +104,9 @@ async def search_doctors(
     query: str,
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
+    current_user: User = Depends(
+        AdminDoctorReception,
+    ),
     service: DoctorService = Depends(
         get_doctor_service,
     ),
@@ -108,7 +119,8 @@ async def search_doctors(
 
 
 # ==========================================================
-# Get
+# Get Doctor
+# ADMIN / DOCTOR / RECEPTIONIST
 # ==========================================================
 
 @router.get(
@@ -117,6 +129,9 @@ async def search_doctors(
 )
 async def get_doctor(
     doctor_id: uuid.UUID,
+    current_user: User = Depends(
+        AdminDoctorReception,
+    ),
     service: DoctorService = Depends(
         get_doctor_service,
     ),
@@ -131,7 +146,8 @@ async def get_doctor(
 
 
 # ==========================================================
-# Update
+# Update Doctor
+# ADMIN ONLY
 # ==========================================================
 
 @router.put(
@@ -141,6 +157,7 @@ async def get_doctor(
 async def update_doctor(
     doctor_id: uuid.UUID,
     data: DoctorUpdate,
+    current_user: User = Depends(AdminOnly),
     service: DoctorService = Depends(
         get_doctor_service,
     ),
@@ -156,7 +173,8 @@ async def update_doctor(
 
 
 # ==========================================================
-# Delete
+# Delete Doctor
+# ADMIN ONLY
 # ==========================================================
 
 @router.delete(
@@ -165,6 +183,7 @@ async def update_doctor(
 )
 async def delete_doctor(
     doctor_id: uuid.UUID,
+    current_user: User = Depends(AdminOnly),
     service: DoctorService = Depends(
         get_doctor_service,
     ),

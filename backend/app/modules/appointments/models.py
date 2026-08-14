@@ -146,3 +146,9 @@ class Appointment(Base, TimestampMixin):
         DateTime(timezone=True),
         nullable=True,
     )
+    __all__ = [
+    "User",
+    "Patient",
+    "Doctor",
+    "Appointment",
+]

@@ -24,8 +24,7 @@ from app.modules.auth.repository import UserRepository
 from app.modules.auth.schemas import (
     PasswordChangeRequest,
     RefreshTokenRequest,
-    TokenResponse,
-    UserRegister,
+    TokenResponse,   
 )
 from app.modules.auth.security import (
     create_access_token,
@@ -53,25 +52,9 @@ class AuthService:
     # Register
     # ==========================================================
 
-    async def register(
-        self,
-        data: UserRegister,
-    ) -> User:
+   
 
-        if await self.repository.email_exists(data.email):
-            raise ConflictException(
-                "Email is already registered."
-            )
-
-        async with self.uow:
-
-            user = await self.repository.create_user(
-                email=data.email,
-                password_hash=hash_password(data.password),
-                role=UserRole.DOCTOR,
-            )
-
-        return user
+        
 
     # ==========================================================
     # Login
@@ -265,4 +248,4 @@ class AuthService:
 
             await self.repository.deactivate(user)
 
-        return users
+        return user

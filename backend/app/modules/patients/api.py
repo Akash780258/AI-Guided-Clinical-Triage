@@ -17,7 +17,7 @@ import uuid
 
 from fastapi import APIRouter, Depends, Query, status
 
-from app.modules.auth.dependencies import get_current_user
+from app.core.security import AdminDoctorReception
 from app.modules.auth.models import User
 from app.modules.patients.dependencies import get_patient_service
 from app.modules.patients.schemas import (
@@ -28,11 +28,14 @@ from app.modules.patients.schemas import (
     PatientUpdate,
 )
 from app.modules.patients.service import PatientService
+from app.modules.patients.file_upload import router as file_upload_router
 
 router = APIRouter(
     prefix="/patients",
     tags=["Patients"],
+    dependencies=[Depends(AdminDoctorReception)],
 )
+router.include_router(file_upload_router)
 
 
 # ==========================================================
@@ -46,7 +49,7 @@ router = APIRouter(
 )
 async def create_patient(
     data: PatientCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(AdminDoctorReception),
     service: PatientService = Depends(get_patient_service),
 ):
     patient = await service.create_patient(
@@ -133,12 +136,6 @@ async def update_patient(
         patient_id=patient_id,
         data=data,
     )
-
-    print("\n==================== PATIENT ====================")
-    print(patient)
-    print(type(patient))
-    print(patient.__dict__)
-    print("=================================================\n")
 
     return PatientResponse.model_validate(patient)
 

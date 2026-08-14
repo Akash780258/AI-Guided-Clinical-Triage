@@ -37,32 +37,10 @@ class UserBase(BaseModel):
 # Register
 # ==========================================================
 
-class UserRegister(UserBase):
-    password: str = Field(
-        min_length=8,
-        max_length=128,
-    )
+# ==========================================================
+# Register
+# ==========================================================
 
-    @field_validator("password")
-    @classmethod
-    def validate_password(cls, value: str):
-
-        if not any(c.isupper() for c in value):
-            raise ValueError(
-                "Password must contain at least one uppercase letter."
-            )
-
-        if not any(c.islower() for c in value):
-            raise ValueError(
-                "Password must contain at least one lowercase letter."
-            )
-
-        if not any(c.isdigit() for c in value):
-            raise ValueError(
-                "Password must contain at least one digit."
-            )
-
-        return value
 
 
 # ==========================================================

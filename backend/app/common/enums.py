@@ -11,10 +11,16 @@ from enum import Enum
 # User Roles
 # ==========================================================
 
+# ==========================================================
+# User Roles
+# ==========================================================
+
 class UserRole(str, Enum):
     ADMIN = "ADMIN"
     DOCTOR = "DOCTOR"
-    NURSE = "NURSE"
+    RECEPTIONIST = "RECEPTIONIST"
+    PHARMACIST = "PHARMACIST"
+    LAB_TECHNICIAN = "LAB_TECHNICIAN"
     RESEARCHER = "RESEARCHER"
 
 
